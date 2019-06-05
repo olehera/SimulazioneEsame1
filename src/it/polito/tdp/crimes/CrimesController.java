@@ -1,10 +1,7 @@
-/**
- * Sample Skeleton for 'Crimes.fxml' Controller Class
- */
-
 package it.polito.tdp.crimes;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.model.Model;
@@ -51,16 +48,15 @@ public class CrimesController {
     @FXML // fx:id="txtResult"
     private TextArea txtResult; // Value injected by FXMLLoader
 
-    
-    @SuppressWarnings("unused")
-	@FXML
+    @FXML
     void doCreaReteCittadina(ActionEvent event) {
-    	Integer anno = (int) boxAnno.getValue();
+    	int anno = 0;
     	
-    	if (anno==null) {
+    	if (boxAnno.getValue()==null) {
     		txtResult.setText("Devi selezionare un anno!");
     		return ;
-    	}
+    	} else 
+    		anno = boxAnno.getValue();
     	
     	model.creaGrafo(anno);
     	
@@ -74,12 +70,13 @@ public class CrimesController {
     	
     	boxMese.getItems().addAll(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
     	boxGiorno.getItems().addAll(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31);
-    	boxAnno.setEditable(false);
+    	
     }
 
     @FXML
     void doSimula(ActionEvent event) {
     	int n = 0;
+    	int anno = 0;
     	int mese = 0;
     	int giorno = 0;
 
@@ -90,6 +87,12 @@ public class CrimesController {
     		txtN.clear();
     		return ;
     	}
+    	
+    	if (boxAnno.getValue()==null) {
+    		txtResult.setText("Devi selezionare un anno!");
+    		return ;
+    	} else 
+    		anno = boxAnno.getValue();
     	
     	if ( n < 1 || n > 10 ) {
     		txtResult.setText("Inserisci numero tra 1 e 10");
@@ -109,12 +112,9 @@ public class CrimesController {
     		giorno = (int) boxGiorno.getValue();
     	
     	
+    	LocalDate data = LocalDate.of(anno, mese, giorno);
     	
-    	
-    	
-    	
-    	
-    	
+    	txtResult.setText("Numero di eventi mal gestiti: "+model.simula(n, anno, data));
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete

@@ -15,7 +15,7 @@ public class Main extends Application {
 		try {
 			
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("Crimes.fxml"));
-			BorderPane root = loader.load();
+			BorderPane root = (BorderPane) loader.load();
 			Scene scene = new Scene(root);
 			
 			CrimesController controller = loader.getController();

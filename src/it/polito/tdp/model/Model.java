@@ -1,5 +1,6 @@
 package it.polito.tdp.model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,6 +21,7 @@ public class Model {
 	private List<Integer> anni;
 	private EventsDao dao;
 	private Graph<Integer, DefaultWeightedEdge> grafo;
+	private Simulatore sim;
 	
 	public Model() {
 		dao = new EventsDao();
@@ -33,18 +35,14 @@ public class Model {
 		
 		Graphs.addAllVertices(grafo, distretti);
 		
-		for (Integer partenza: distretti) {
-			for (Integer arrivo: distretti) {
-				if (!grafo.containsEdge(partenza, arrivo) && partenza != arrivo) {
+		for (Integer partenza: distretti)
+		for (Integer arrivo: distretti)
+			if (!grafo.containsEdge(partenza, arrivo) && partenza != arrivo) {
+
+				double peso = LatLngTool.distance(dao.centroDistretto(anno, partenza), dao.centroDistretto(anno, arrivo), LengthUnit.KILOMETER);
 					
-					double peso = LatLngTool.distance(dao.centroDistretto(anno, partenza), dao.centroDistretto(anno, arrivo), LengthUnit.KILOMETER);
-					
-					Graphs.addEdge(grafo, partenza, arrivo, peso);
-				}
-				
+				Graphs.addEdge(grafo, partenza, arrivo, peso);
 			}
-		}
-		
 		
 	}
 
@@ -69,19 +67,13 @@ public class Model {
 		return distretti;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	public int simula(int n, int anno, LocalDate data) {
+		
+		sim = new Simulatore();
+		sim.init(n, dao.centralePolizia(anno), dao.listEvents(data), grafo);
+		sim.run();
+		
+		return sim.getEventiMalGestiti();
+	}
 	
 }

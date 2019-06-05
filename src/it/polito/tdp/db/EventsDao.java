@@ -1,9 +1,11 @@
 package it.polito.tdp.db;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,14 +15,16 @@ import it.polito.tdp.model.Event;
 
 public class EventsDao {
 	
-	public List<Event> listAllEvents(){
+	public List<Event> listEvents(LocalDate data){
 		
-		String sql = "SELECT * FROM events" ;
+		String sql = "SELECT * FROM events WHERE date(reported_date) = ? ORDER BY reported_date" ;
 		
 		try {
 			Connection conn = DBConnect.getConnection() ;
 
 			PreparedStatement st = conn.prepareStatement(sql) ;
+			
+			st.setDate(1, Date.valueOf(data));
 			
 			List<Event> list = new ArrayList<>() ;
 			
@@ -140,6 +144,39 @@ public class EventsDao {
 		}
 		
 		return centro;
+	}
+	
+	public int centralePolizia(int anno){
+		
+		String sql = "SELECT district_id, COUNT(*) AS cnt FROM events " + 
+				     "WHERE year(reported_date) = ? GROUP BY district_id";
+		
+		int centrale = 0;
+		int cnt = 0;
+		
+		try {
+			Connection conn = DBConnect.getConnection() ;
+
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			
+			st.setInt(1, anno);
+			
+			ResultSet res = st.executeQuery() ;
+			
+			while (res.next()) {
+				if (res.getInt("cnt") < cnt || cnt == 0) {
+					centrale = res.getInt("district_id");
+					cnt = res.getInt("cnt");
+				}	
+			}
+			
+			conn.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return centrale;
 	}
 	
 
