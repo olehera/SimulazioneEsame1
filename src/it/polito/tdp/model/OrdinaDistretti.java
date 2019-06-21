@@ -15,6 +15,9 @@ public class OrdinaDistretti implements Comparator<Integer> {
 		this.distretto = distretto;
 	}
 
+	/**
+	 *  Ordina in base alla distanza crescente 
+	 */
 	@Override
 	public int compare(Integer d1, Integer d2) {
 		return (int)(grafo.getEdgeWeight(grafo.getEdge(distretto, d1)) - grafo.getEdgeWeight(grafo.getEdge(distretto, d2)));

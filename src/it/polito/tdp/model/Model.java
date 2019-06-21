@@ -58,6 +58,10 @@ public class Model {
 		return anni;
 	}
 	
+	public List<Integer> getGiorni(int mese, int anno) {
+		return dao.listOfDays(mese, anno);
+	}
+	
 	public List<Integer> trovaAdiacenti(int distretto) {
 		
 		List<Integer> distretti = Graphs.neighborListOf(grafo, distretto);

@@ -1,6 +1,7 @@
 package it.polito.tdp.crimes;
 
 import java.net.URL;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 
@@ -15,10 +16,12 @@ import javafx.scene.control.TextField;
 public class CrimesController {
 
 	private Model model;
+	private int anno;
 	
 	public void setModel(Model model) {
     	this.model = model;
     	boxAnno.getItems().addAll(model.getAnni());
+    	anno = 0;
     }
 	
     @FXML // ResourceBundle that was given to the FXMLLoader
@@ -50,7 +53,6 @@ public class CrimesController {
 
     @FXML
     void doCreaReteCittadina(ActionEvent event) {
-    	int anno = 0;
     	
     	if (boxAnno.getValue()==null) {
     		txtResult.setText("Devi selezionare un anno!");
@@ -69,30 +71,29 @@ public class CrimesController {
     	}
     	
     	boxMese.getItems().addAll(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
-    	boxGiorno.getItems().addAll(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31);
-    	
+    }
+    
+    @FXML
+    void doCaricaGiorni(ActionEvent event) {
+    	Integer mese = boxMese.getValue();
+    	boxGiorno.getItems().clear();
+    	boxGiorno.getItems().addAll(model.getGiorni(mese, anno));
     }
 
     @FXML
     void doSimula(ActionEvent event) {
     	int n = 0;
-    	int anno = 0;
     	int mese = 0;
     	int giorno = 0;
+    	LocalDate data;
 
     	try {
     		n = Integer.parseInt(txtN.getText().trim());
     	} catch(NullPointerException npe) {
-    		npe.printStackTrace();
+    		txtResult.setText("Inserisci un numero intero tra 1 e 10");
     		txtN.clear();
     		return ;
     	}
-    	
-    	if (boxAnno.getValue()==null) {
-    		txtResult.setText("Devi selezionare un anno!");
-    		return ;
-    	} else 
-    		anno = boxAnno.getValue();
     	
     	if ( n < 1 || n > 10 ) {
     		txtResult.setText("Inserisci numero tra 1 e 10");
@@ -111,8 +112,12 @@ public class CrimesController {
     	} else
     		giorno = (int) boxGiorno.getValue();
     	
-    	
-    	LocalDate data = LocalDate.of(anno, mese, giorno);
+    	try {
+    		data = LocalDate.of(anno, mese, giorno);
+    	} catch (DateTimeException e) {
+    		txtResult.setText("Errore nella Data selezionata!");
+    		return ;
+		}
     	
     	txtResult.setText("Numero di eventi mal gestiti: "+model.simula(n, anno, data));
     }

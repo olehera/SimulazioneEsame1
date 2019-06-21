@@ -156,7 +156,4 @@ public class Event {
 				+ reported_date + ", district_id=" + district_id + "]";
 	}
 	
-	
-	
-	
 }

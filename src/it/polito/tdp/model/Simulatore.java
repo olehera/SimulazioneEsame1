@@ -53,7 +53,7 @@ public class Simulatore {
 				Agente a = scegliAgente(ev.getEvent().getDistrict_id());
 				
 				if (a != null ) {
-					double tempoImpiegato = distanza(a.getPosto(), ev.getEvent().getDistrict_id()) / 60;
+					double tempoImpiegato = distanza(a.getPosto(), ev.getEvent().getDistrict_id()) / 60;   // velocità 60 km/h
 					
 					if (tempoImpiegato > 0.25)     // 15 min 
 						eventiMalGestiti++;
@@ -61,13 +61,15 @@ public class Simulatore {
 					a.setLibero(false);
 					a.setPosto(ev.getEvent().getDistrict_id());
 						
-					if (ev.getEvent().getOffense_category_id().equals("all_other_crimes"))
-						tempoImpiegato += rand.nextInt(2)+1;
+					if (ev.getEvent().getOffense_category_id().equals("all-other-crimes")) {
+						tempoImpiegato += (rand.nextInt(2)+1); System.out.println("si\n"); }
 					else 
 						tempoImpiegato += 2;
 					
 					queue.add(new Evento(ev.getTempo().plusMinutes((long)(tempoImpiegato*60)), TipoEvento.FREE, a));
-				} 
+				} else {
+					eventiMalGestiti++;
+				}
 				
 				break;
 				
