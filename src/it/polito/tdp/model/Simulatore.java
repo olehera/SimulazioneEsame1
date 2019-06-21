@@ -61,8 +61,8 @@ public class Simulatore {
 					a.setLibero(false);
 					a.setPosto(ev.getEvent().getDistrict_id());
 						
-					if (ev.getEvent().getOffense_category_id().equals("all-other-crimes")) {
-						tempoImpiegato += (rand.nextInt(2)+1); System.out.println("si\n"); }
+					if (ev.getEvent().getOffense_category_id().equals("all-other-crimes"))
+						tempoImpiegato += (rand.nextInt(2)+1);
 					else 
 						tempoImpiegato += 2;
 					
